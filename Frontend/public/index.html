@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tienda en Línea</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header>
+    <nav>
+      <!-- Hamburger Icon -->
+      <div class="hamburger-icon">
+        <img src="https://www.svgrepo.com/show/506795/burger-menu-right.svg" alt="Menú">
+      </div>
+  
+      <!-- Inicio con Imagen -->
+      <div class="inicio">
+        <img src="https://carrefourar.vtexassets.com/assets/vtex/assets-builder/carrefourar.theme/65.0.1/logo/logo___8ebc4231614a7b41a4258354ce76e1e1.svg" alt="Inicio">
+      </div>
+    
+      <!-- Barra de Búsqueda -->
+      <div class="search-bar">
+        <input type="text" placeholder="Buscar">
+        <button>Buscar</button>
+      </div>
+    
+      <!-- Ingresar y Carrito -->
+      <div class="carrito-container">
+        <div class="carrito-link" onclick="abrirCarrito()">
+          <img src="https://cdn-icons-png.flaticon.com/512/4379/4379539.png" alt="Carrito de compras">
+          <div class="contador-carrito">0</div>
+        </div>
+      </div>
+      
+      <div id="carrito-modal" class="modal">
+        <div class="modal-content">
+          <span class="close" onclick="cerrarCarrito()">&times;</span>
+          <h2>Carrito de Compras</h2>
+          <div id="carrito-productos"></div>
+          <p>Total: <span id="total-precio">0.00</span></p>
+          <!-- Rectángulo redondeado con fondo gris al final del modal -->
+          <div class="finalizar-compra">
+            <p>Finalizar Compra</p>
+          </div>
+        </div>
+      </div>
+
+    </nav>
+  </header>
+  
+
+
+    <main>
+        <h2>Productos Destacados</h2>
+
+      <div id= 'page-content' class="productos">
+      </div>
+      
+
+    </main>
+
+    <footer>
+        <p>&copy; 2023 Tienda en Línea</p>
+    </footer>
+    
+    <script src="./app.js"></script>
+
+    
+</body>
+</html>
