@@ -1,31 +1,31 @@
  const productos = [
   {
-    "id":1,
-    "name":"Producto A",
+    "id":11,
+    "name":"Producto Z",
     "price":10,
     "description":"helado muy rico",
     "image":"https://media-cdn.tripadvisor.com/media/photo-s/0f/35/9c/43/really-good-hot-fudge.jpg",
     "stock":10
   },
   {
-    "id": 2,
-    "name": "Producto B",
+    "id": 12,
+    "name": "Producto X",
     "price": 20,
     "description":"helado muy rico",
     "image": "https://www.heladosmiquel.com/wp-content/uploads/2018/04/tipos-de-helados.jpg",
     "stock": 10
   },
   {
-  "id": 3,
-  "name": "Producto C",
+  "id": 13,
+  "name": "Producto Y",
   "price": 30,
   "description":"helado muy rico",
   "image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSXwvJMG8YSuY0aBYlnGSngTxEN8MZw1pG1nxZxPplnFZOZp6T49Ou2CV-MnPLjqlaNEAY&usqp=CAU",
   "stock": 10
   },
   {
-    "id":4,
-    "name":"Producto D",
+    "id":14,
+    "name":"Producto V",
     "price":10,
     "description":"helado muy rico",
     "image":"https://frutto.com.ar/wp-content/uploads/2022/11/helado-de-chocolate-para-veganos-Lomas-de-Zamora.jpg",
@@ -78,6 +78,13 @@
     "description":"helado muy rico",
     "image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQei13Z3H9QDDXLJ6hwVRpvXR2WwbRWEgigGGlByCFlsz9cVgFb3t4w_Sils_mT0m1WsZY&usqp=CAU",
     "stock": 10
-    }
+    },{
+      "id": 11,
+      "name": "Producto k",
+      "price": 10,
+      "description":"helado muy rico",
+      "image": "https://mandolina.co/wp-content/uploads/2023/04/helado-cono-1-1.jpg",
+      "stock": 10
+      }
 ]
 module.exports = productos;

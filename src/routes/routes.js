@@ -6,9 +6,8 @@ router.get('/api/productos', (req, res) => {
   res.send(productos);
 });
 
-router.post('/api/pay', (req, res) => {
-  res.send(productos);
-});
+
+
 
 
 module.exports = router;
