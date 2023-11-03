@@ -1,21 +1,33 @@
 // Inicializa el contador del carrito a 0.
 let productosEnCarrito = [];
+let productsList = [];
 
 // Función para aumentar la cantidad en el carrito de un producto específico.
 function agregarAlCarrito(productId) {
-  productosEnCarrito.push(productId); // Agregar el id del producto al array
+  const product = productsList.find(p => p.id === productId);
 
+  if (product.stock > 0) {
+    product.stock--;
+    productosEnCarrito.push(productId);
+  }
+
+  displayProductos();
   actualizarContadorCarrito();
   actualizarCantidadEnCarrito(productId);
 }
 
 // Función para disminuir la cantidad en el carrito de un producto específico.
 function quitarDelCarrito(productId) {
-  // Elimina el producto del array productosEnCarrito
-  productosEnCarrito = productosEnCarrito.filter(id => id !== productId);
+  const index = productosEnCarrito.indexOf(productId);
 
-  actualizarContadorCarrito();
-  actualizarCantidadEnCarrito(productId);
+  if (index !== -1) {
+    const product = productsList.find(p => p.id === productId);
+    product.stock++;
+    productosEnCarrito.splice(index, 1);
+    displayProductos();
+    actualizarContadorCarrito();
+    actualizarCantidadEnCarrito(productId);
+  }
 }
 
 
@@ -42,25 +54,33 @@ function actualizarCantidadEnCarrito(productId) {
 
 
 // Generar productos en el html
-function displayProductos(productsList) {
+function displayProductos() {
   let productoHTML = '';
-  productsList.forEach((element, index) => {
+  productsList.forEach((p, index) => {
+    let buttonHTML = '';
+
+    if (p.stock <= 0) {
+      buttonHTML = `<button disabled class="agregar">Sin stock</button>`;
+    } else {
+      buttonHTML = `<button class="agregar" onclick="agregarAlCarrito(${p.id})">Agregar al Carrito</button>`;
+    }
+
     productoHTML +=
-  `<div class="producto" data-product-id="${element.id}">
-     <img src="${element.image}" alt="Producto 1">
-     <h3>${element.name}</h3>
-     <p>${element.price}</p>
-     <p>Cantidad en el carrito: <span class="cantidad">0</span></p>
-     <button class="agregar" onclick="agregarAlCarrito(${element.id})">Agregar al Carrito</button>
-     <button class="quitar" onclick="quitarDelCarrito(${element.id})">Quitar del Carrito</button>
-  </div>`;
+      `<div class="producto" data-product-id="${p.id}">
+         <img src="${p.image}" alt="Producto 1">
+         <h3>${p.name}</h3>
+         <p>precio $${p.price}</p>
+         <p>Cantidad en el carrito: <span class="cantidad">0</span></p>
+         ${buttonHTML}
+         <button class="quitar" onclick="quitarDelCarrito(${p.id})">Quitar del Carrito</button>
+      </div>`;
   });
   document.getElementById('page-content').innerHTML = productoHTML;
 }
 
 window.onload = async () => {
-  const productsList = await (await fetch("/api/productos")).json();
-  displayProductos(productsList);
+  productsList = await (await fetch("/api/productos")).json();
+  displayProductos();
 }
 
 
@@ -92,7 +112,7 @@ function abrirCarrito() {
     const cantidad = cantidadPorProducto[productId];
     const producto = document.querySelector(`[data-product-id="${productId}"]`);
     const imagenProducto = producto.querySelector('img').src;
-    const precioProductoStr = producto.querySelector('p').textContent.replace('$', '');
+    const precioProductoStr = producto.querySelector('p').textContent.replace('$', '').replace(/[^0-9.]/g, '');
     const precioProducto = parseFloat(precioProductoStr);
     const subtotal = precioProducto * cantidad;
     total += subtotal;
@@ -122,8 +142,18 @@ function cerrarCarrito() {
   // Llamar a la función cerrarCarrito() cuando se haga clic en la "X" del modal
   document.querySelector('.close').addEventListener('click', cerrarCarrito);
   
-  function completarCompra() {
-    // Coloca aquí el código para completar la compra, como enviar los detalles del carrito al servidor, procesar el pago, etc.
-    // Por ahora, solo mostraremos un mensaje de ejemplo.
-    console.log(productosEnCarrito);
+  async function completarCompra() {
+    try{
+       productsList = await (await fetch("/api/pay", {
+       method: "post",
+       body: JSON.stringify(productosEnCarrito),
+       headers:{
+        "content-type": "application/json"
+               }
+    })).json();
+    }
+    catch{
+      console.log("sin stock")
+    }
+    productosEnCarrito = [];
   }
