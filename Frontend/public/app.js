@@ -143,17 +143,46 @@ function cerrarCarrito() {
   document.querySelector('.close').addEventListener('click', cerrarCarrito);
   
   async function completarCompra() {
-    try{
-       productsList = await (await fetch("/api/pay", {
-       method: "post",
-       body: JSON.stringify(productosEnCarrito),
-       headers:{
-        "content-type": "application/json"
-               }
-    })).json();
+    try {
+      // Envía la lista de productos en el carrito al backend
+      const response = await fetch("/api/pay", {
+        method: "post",
+        body: JSON.stringify(productosEnCarrito),
+        headers: {
+          "content-type": "application/json",
+        },
+      });
+  
+      if (response.ok) {
+        const productsList = await response.json();
+        console.log("Compra completada exitosamente:", productsList);
+      } else {
+        console.log("Error al procesar la compra");
+      }
+  
+      productosEnCarrito = [];
+    } catch (error) {
+      console.error("Error en completarCompra:", error);
     }
-    catch{
-      console.log("sin stock")
-    }
-    productosEnCarrito = [];
   }
+  
+ // Agrega esta función al final de tu archivo app.js
+// Modifica esta función al final de tu archivo app.js
+const hamburguesaContainer = document.getElementById('hamburguesa-container');
+const hamburguesaIcon = document.getElementById('hamburguesa-icon');
+const menuDesplegable = document.getElementById('menu-desplegable');
+
+hamburguesaContainer.addEventListener('click', function() {
+  menuDesplegable.style.left = (menuDesplegable.style.left === '0px') ? '-250px' : '0px';
+  hamburguesaIcon.classList.toggle('cerrar');
+});
+
+// Si deseas que el menú se cierre al hacer clic en cualquier parte del documento, puedes agregar el siguiente código:
+document.addEventListener('click', function(event) {
+  if (!hamburguesaContainer.contains(event.target) && !menuDesplegable.contains(event.target)) {
+    menuDesplegable.style.left = '-250px';
+    hamburguesaIcon.classList.remove('cerrar');
+  }
+});
+
+
