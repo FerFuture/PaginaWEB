@@ -38,17 +38,16 @@ function actualizarContadorCarrito() {
 }
 
 // Función para actualizar la cantidad en el carrito de un producto en el DOM.
-function actualizarCantidadEnCarrito(productId) {
-  // Encuentra todos los elementos con el atributo data-product-id igual al productId
-  const cantidadElement = document.querySelectorAll(`[data-product-id="${productId}"] .cantidad`);
-  
-  if (cantidadElement) {
-    const cantidad = productosEnCarrito.filter(id => id === productId).length;
-    
-    cantidadElement.forEach(element => {
-      element.textContent = cantidad;
-    });
-  }
+function actualizarCantidadEnCarrito() {
+  productsList.forEach(product => {
+    const cantidadElement = document.querySelectorAll(`[data-product-id="${product.id}"] .cantidad`);
+    if (cantidadElement) {
+      const cantidad = productosEnCarrito.filter(id => id === product.id).length;
+      cantidadElement.forEach(element => {
+        element.textContent = cantidad; // Actualiza la cantidad de cada producto
+      });
+    }
+  });
 }
 
 
@@ -60,7 +59,7 @@ function displayProductos() {
     let buttonHTML = '';
 
     if (p.stock <= 0) {
-      buttonHTML = `<button disabled class="agregar">Sin stock</button>`;
+      buttonHTML = `<button disabled class="agregar disabled">Sin stock</button>`;
     } else {
       buttonHTML = `<button class="agregar" onclick="agregarAlCarrito(${p.id})">Agregar al Carrito</button>`;
     }
@@ -186,3 +185,18 @@ document.addEventListener('click', function(event) {
 });
 
 
+function mostrarLoader() {
+  document.getElementById('loader').style.display = 'block';
+}
+
+function ocultarLoader() {
+  document.getElementById('loader').style.display = 'none';
+}
+
+// Ejemplo de uso
+window.onload = async () => {
+  mostrarLoader();
+  productsList = await (await fetch("/api/productos")).json();
+  displayProductos();
+  ocultarLoader();
+};
