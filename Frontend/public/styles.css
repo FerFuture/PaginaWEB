@@ -534,3 +534,17 @@ nav .search-bar input, nav .search-bar button {
 .agregar[disabled]:hover, .agregar.disabled:hover {
   background-color: #bbbbbb; /* Un tono de gris ligeramente diferente al pasar el ratón */
 }
+
+#categoryBackground {
+  background-image: url('https://th.bing.com/th/id/OIG.yySlb5WnG2Dx5SKUDP0q?w=1024&h=1024&rs=1&pid=ImgDetMain');
+  background-size: 100% auto;
+  background-position: center;
+  padding: 50px;
+  box-sizing: border-box;
+  width: 100%; /* Asegura que el div ocupe todo el ancho */
+}
+
+#titulo-categoria{
+  color:white;
+  margin: 0;
+}

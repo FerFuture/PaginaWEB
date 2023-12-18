@@ -8,6 +8,20 @@ router.get('/api/productos', async (req, res) => {
     const products = await sequelize.query('SELECT * FROM productos', {
       type: sequelize.QueryTypes.SELECT,
     });
+    
+    res.json(products);
+  } catch (error) {
+    console.error('Error al obtener los productos:', error);
+    res.status(500).json({ error: 'Error al obtener los productos' });
+  }
+});
+
+router.get('/api/destacados', async (req, res) => {
+  try {
+    const products = await sequelize.query('SELECT * FROM productos WHERE stock <= 5', {
+      type: sequelize.QueryTypes.SELECT,
+    });
+
     res.json(products);
   } catch (error) {
     console.error('Error al obtener los productos:', error);
@@ -58,29 +72,100 @@ router.post('/api/pay', async (req, res) => {
   }
 })
 
-router.get('/api/productos/categoria/:categoryName', async (req, res) => {
+router.get('/api/productos/categoria/:categoryId', async (req, res) => {
+  const categoryId = req.params.categoryId;
   try {
-    const categoryName = req.params.categoryName;
-    const decodedCategoryName = decodeURIComponent(categoryName);
-
-    const products = await sequelize.query(
-      `SELECT * FROM productos WHERE category_id = (
-        SELECT id FROM categories WHERE name = $1
-      )`, {
-        bind: [decodedCategoryName],
-        type: sequelize.QueryTypes.SELECT
-      }
-    );
-
-    res.json(products);
+      const productos = await sequelize.query(`
+          SELECT productos.* FROM productos
+          JOIN subcategories ON productos.subcategory_id = subcategories.id
+          WHERE subcategories.category_id = :categoryId
+      `, {
+          replacements: { categoryId: categoryId },
+          type: sequelize.QueryTypes.SELECT
+      });
+      res.json(productos);
   } catch (error) {
-    console.error('Error al obtener los productos:', error);
-    res.status(500).json({ error: 'Error al obtener los productos' });
+      console.error('Error al obtener los productos por categoría:', error);
+      res.status(500).json({ error: 'Error interno del servidor' });
   }
 });
 
 
+router.get('/api/productos/subcategoria/:subcategoryId', async (req, res) => {
+  const subcategoryId = req.params.subcategoryId;
+  try {
+      const productos = await sequelize.query(`
+          SELECT * FROM productos WHERE subcategory_id = :subcategoryId
+      `, {
+          replacements: { subcategoryId: subcategoryId },
+          type: sequelize.QueryTypes.SELECT
+      });
+      res.json(productos);
+  } catch (error) {
+      console.error('Error al obtener los productos por subcategoría:', error);
+      res.status(500).json({ error: 'Error interno del servidor' });
+  }
+});
 
+// En tu archivo del backend (puede ser parte de tu archivo router.js)
+router.get('/api/productos/buscar', async (req, res) => {
+  const searchTerm = req.query.termino; // Obtén el término de búsqueda desde la consulta
+
+  try {
+    // Realiza la lógica de búsqueda en la base de datos y devuelve los resultados
+    const productosEncontrados = await buscarProductosPorNombre(searchTerm);
+    res.json(productosEncontrados);
+  } catch (error) {
+    console.error('Error al buscar productos en el backend:', error);
+    res.status(500).json({ error: 'Error interno del servidor' });
+  }
+});
+
+async function buscarProductosPorNombre(searchTerm) {
+  try {
+    // Realiza la consulta SQL para buscar productos por nombre
+    const productosEncontrados = await sequelize.query(`
+      SELECT * FROM productos
+      WHERE name ILIKE :searchTerm
+    `, {
+      replacements: { searchTerm: `%${searchTerm}%` }, // Utiliza ILIKE para búsqueda case-insensitive
+      type: sequelize.QueryTypes.SELECT
+    });
+
+    return productosEncontrados;
+  } catch (error) {
+    throw error;
+  }
+}
+
+// En tu archivo del backend (puede ser parte de tu archivo router.js)
+router.get('/api/productos/ofertas', async (req, res) => {
+  try {
+    // Realiza la lógica de búsqueda en la base de datos y devuelve los resultados de ofertas
+    const productosOfertas = await buscarProductosEnOferta();
+    res.json(productosOfertas);
+  } catch (error) {
+    console.error('Error al obtener productos en oferta en el backend:', error);
+    res.status(500).json({ error: 'Error interno del servidor' });
+  }
+
+});
+
+async function buscarProductosEnOferta() {
+  try {
+    // Realiza la consulta SQL para buscar productos en oferta (precio menor o igual a 500)
+    const productosOfertas = await sequelize.query(`
+      SELECT * FROM productos
+      WHERE price <= 500
+    `, {
+      type: sequelize.QueryTypes.SELECT
+    });
+
+    return productosOfertas;
+  } catch (error) {
+    throw error;
+  }
+}
 
 
 
